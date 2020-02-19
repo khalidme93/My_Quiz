@@ -1,8 +1,10 @@
 package com.example.myquiz
 
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import android.widget.Button
 import android.widget.TextView
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
@@ -19,6 +21,11 @@ class StartPage : AppCompatActivity() {
         setContentView(R.layout.activity_startpage)
 
         val nameTxt = findViewById<TextView>(R.id.displayText)
+        val API_Button = findViewById<Button>(R.id.API_button)
+        API_Button.setOnClickListener{v->
+            val intent = Intent(this, API::class.java)
+            startActivity(intent)
+        }
         var uid = user!!.uid
 
         db.collection("users").document(uid).get().addOnSuccessListener { document ->
