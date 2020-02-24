@@ -48,7 +48,8 @@ class SignUp : AppCompatActivity() {
                     val uid = user!!.uid
 
                     val userValue = hashMapOf(
-                        "name" to userName
+                        "name" to userName,
+                        "Admin" to false
                     )
 
                     //mDatabase.child(uid).child("Names").setValue(userName)

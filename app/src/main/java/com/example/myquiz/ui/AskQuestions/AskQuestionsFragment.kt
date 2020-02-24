@@ -1,37 +1,53 @@
-package com.example.myquiz
+package com.example.myquiz.ui.AskQuestions
 
+import android.content.Context
 import android.os.Bundle
 import android.util.Log
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import android.widget.EditText
 import android.widget.ListView
 import androidx.appcompat.app.AlertDialog
-import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProviders
+import com.example.myquiz.Comment
+import com.example.myquiz.CustomListViewAdapter
+import com.example.myquiz.R
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
 import com.google.firebase.firestore.FirebaseFirestore
+import com.example.myquiz.ui.AskQuestions.AskQuestionsFragment as AskQuestionsFragment
 
+class AskQuestionsFragment : Fragment() {
 
-class API : AppCompatActivity() {
-
+    lateinit var mDatabase : DatabaseReference
+    val db = FirebaseFirestore.getInstance()
+    var user = FirebaseAuth.getInstance().currentUser
     private val myRef = FirebaseDatabase.getInstance().getReference("forum")
     private lateinit var listView: ListView
     private val list = mutableListOf<Comment>()
     private lateinit var adapter: CustomListViewAdapter
-    private val db = FirebaseFirestore.getInstance()
+    private lateinit var askQuestionsViewModel: AskQuestionsViewModel
+    private lateinit var my_context: Context
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_api)
-
-        listView = findViewById<ListView>(R.id.items_list)
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        askQuestionsViewModel =
+            ViewModelProviders.of(this).get(AskQuestionsViewModel::class.java)
+        val root = inflater.inflate(R.layout.fragment_ask_questions, container, false)
+        listView = root.findViewById<ListView>(R.id.items_list)
         val user = FirebaseAuth.getInstance().currentUser
         val userId = user!!.uid
-
+        this.my_context = root.context
         //reference for FAB
-        val fab = findViewById<FloatingActionButton>(R.id.fab)
+        val fab = root.findViewById<FloatingActionButton>(R.id.fab)
 
-        //adapter = CustomListViewAdapter(this, list!!)
+        adapter = CustomListViewAdapter(this.my_context, list!!)
         listView!!.setAdapter(adapter)
 
 
@@ -45,19 +61,20 @@ class API : AppCompatActivity() {
 
 
         db.collection("users").document(userId).get().addOnSuccessListener { document ->
-             if(document.data?.get("Admin") as Boolean)
-                 listViewClickListener()
+            if(document.data?.get("Admin") as Boolean)
+                listViewClickListener()
 
         }
-        .addOnFailureListener { exception ->
-            Log.w("API-Page", "Error getting documents.", exception)
-        }
+            .addOnFailureListener { exception ->
+                Log.w("API-Page", "Error getting documents.", exception)
+            }
 
+        return root
     }
 
     private fun addNewItemDialog() {
-        val alert = AlertDialog.Builder(this)
-        val itemEditText = EditText(this)
+        val alert = AlertDialog.Builder(this.my_context)
+        val itemEditText = EditText(this.my_context)
         alert.setMessage("Add A Comment")
         alert.setTitle("Enter Your Problem")
         alert.setView(itemEditText)
@@ -137,8 +154,8 @@ class API : AppCompatActivity() {
     //for admins
     private fun listViewClickListener(){
         listView.setOnItemClickListener { parent, view, position, id ->
-            val alert = AlertDialog.Builder(this)
-            val itemEditText = EditText(this)
+            val alert = AlertDialog.Builder(this.my_context)
+            val itemEditText = EditText(this.my_context)
             val commentItem = list.get(position)
 
             itemEditText.setText(commentItem.response)
@@ -156,7 +173,3 @@ class API : AppCompatActivity() {
         }
     }
 }
-
-
-
-

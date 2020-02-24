@@ -1,13 +1,18 @@
 package com.example.myquiz
 
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.widget.Button
 import android.widget.TextView
+import com.google.android.material.bottomnavigation.BottomNavigationView
+import androidx.appcompat.app.AppCompatActivity
+import androidx.navigation.findNavController
+import androidx.navigation.ui.AppBarConfiguration
+import androidx.navigation.ui.setupActionBarWithNavController
+import androidx.navigation.ui.setupWithNavController
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.database.*
+import com.google.firebase.database.DatabaseReference
 import com.google.firebase.firestore.FirebaseFirestore
 
 class StartPage : AppCompatActivity() {
@@ -18,34 +23,42 @@ class StartPage : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_startpage)
+        setContentView(R.layout.activity_start_page)
+        val navView: BottomNavigationView = findViewById(R.id.nav_view)
 
-        val nameTxt = findViewById<TextView>(R.id.displayText)
-        val API_Button = findViewById<Button>(R.id.API_button)
-        API_Button.setOnClickListener{v->
-            val intent = Intent(this, API::class.java)
-            startActivity(intent)
-        }
-        var uid = user!!.uid
 
-        db.collection("users").document(uid).get().addOnSuccessListener { document ->
-            nameTxt.text = "Welcome " + document["name"]
-        }
-        .addOnFailureListener { exception ->
-            Log.w("startPage", "Error getting documents.", exception)
-        }
+        val navController = findNavController(R.id.nav_host_fragment)
+        // Passing each menu ID as a set of Ids because each
+        // menu should be considered as top level destinations.
+        val appBarConfiguration = AppBarConfiguration(
+            setOf(
+                R.id.navigation_home, R.id.navigation_dashboard, R.id.navigation_askQuetions
+            )
+        )
 
-        /*mDatabase = FirebaseDatabase.getInstance().getReference("Names")
+/*
+var uid = user!!.uid
 
-        mDatabase.child(uid).child("Names").addValueEventListener(object : ValueEventListener {
-            override fun onCancelled(p0: DatabaseError) {
-                TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-            }
-            override fun onDataChange(snapshot: DataSnapshot) {
-                val result = snapshot.child("Names").toString()
-                nameTxt.text = "Welcome" + result
-            }
-        })
-        */
+db.collection("users").document(uid).get().addOnSuccessListener { document ->
+    nameTxt.text = "Welcome " + document["name"]
+}
+    .addOnFailureListener { exception ->
+        Log.w("startPage", "Error getting documents.", exception)
     }
+
+/*mDatabase = FirebaseDatabase.getInstance().getReference("Names")
+
+mDatabase.child(uid).child("Names").addValueEventListener(object : ValueEventListener {
+    override fun onCancelled(p0: DatabaseError) {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+    override fun onDataChange(snapshot: DataSnapshot) {
+        val result = snapshot.child("Names").toString()
+        nameTxt.text = "Welcome" + result
+    }
+})
+*/*/
+setupActionBarWithNavController(navController, appBarConfiguration)
+navView.setupWithNavController(navController)
+}
 }

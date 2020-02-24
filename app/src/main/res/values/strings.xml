@@ -2,4 +2,9 @@
     <string name="app_name">My Quiz</string>
     <string name="textview">TextView</string>
     <string name="api">API</string>
+    <string name="title_activity_start_page">StartPage</string>
+    <string name="title_home">Home</string>
+    <string name="title_dashboard">Dashboard</string>
+    <string name="title_quiz">Quiz</string>
+    <string name="title_askQuestion">Ask questions</string>
 </resources>

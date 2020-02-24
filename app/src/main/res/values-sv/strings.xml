@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">My Quiz</string>
+    <string name="title_home">Hem</string>
+    <string name="title_quiz">Frågor</string>
+    <string name="title_askQuestion">Ställ frågor</string>
+</resources>
